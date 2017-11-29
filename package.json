@@ -14,7 +14,7 @@
   },
   "main": "./faye-redis",
   "dependencies": {
-    "redis": "2.6.0-2"
+    "redis": "2.8.0"
   },
   "devDependencies": {
     "jstest": ""
