@@ -120,14 +120,19 @@ Engine.prototype = {
   },
 
   subscribe: function(clientId, channel, callback, context) {
+    var multi = self._redis.multi();
+    var time = new Date().getTime();
     var self = this;
-    this._redis.sadd(this._ns + '/clients/' + clientId + '/channels', channel, function(error, added) {
+
+    multi.sadd(this._ns + '/clients/' + clientId + '/channels', channel, function(error, added) {
       if (added === 1) self._server.trigger('subscribe', clientId, channel);
     });
-    this._redis.sadd(this._ns + '/channels' + channel, clientId, function() {
+    multi.sadd(this._ns + '/channels' + channel, clientId, function() {
       self._server.debug('Subscribed client ? to channel ?', clientId, channel);
       if (callback) callback.call(context);
     });
+    multi.zadd(this._ns + '/clients', time, clientId);
+    multi.exec();
   },
 
   unsubscribe: function(clientId, channel, callback, context) {
