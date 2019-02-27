@@ -120,9 +120,9 @@ Engine.prototype = {
   },
 
   subscribe: function(clientId, channel, callback, context) {
+    var self = this;
     var multi = self._redis.multi();
     var time = new Date().getTime();
-    var self = this;
 
     multi.sadd(this._ns + '/clients/' + clientId + '/channels', channel, function(error, added) {
       if (added === 1) self._server.trigger('subscribe', clientId, channel);
