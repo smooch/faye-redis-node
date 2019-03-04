@@ -38,8 +38,7 @@ describe('Redis engine', function() {
 
     describe('#subscribe', function() {
         it('should subscribe the client to the channel', async () => {
-            engine.subscribe(clientId, channel);
-            await utils.delay(500);
+            await new Promise((resolve) => engine.subscribe(clientId, channel, resolve));
 
             const channelIsMember = await utils.invokeAsPromise(
                 redisClient,
@@ -61,8 +60,7 @@ describe('Redis engine', function() {
         it('should add a new entry to `faye/clients` sorted set', async () => {
             const clientId = hat();
 
-            engine.subscribe(clientId, channel);
-            await utils.delay(500);
+            await new Promise((resolve) => engine.subscribe(clientId, channel, resolve));
 
             const clientScore = await utils.invokeAsPromise(redisClient, 'zscore', `${namespace}/clients`, clientId);
             expect(clientScore).to.not.be.undefined;
